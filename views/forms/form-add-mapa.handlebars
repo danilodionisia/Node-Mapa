@@ -1,0 +1,84 @@
+{{#each erros}}
+    <div class="alert alert-danger">{{texto}}</div>
+{{else}}
+
+{{/each}}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h4>Insere no Mapa</h4>
+            <form action="/add-mapa-db" method="POST">
+                <div class="form-row mt-5">
+                    <div class="form-group col-md-4">
+                        <label for="data">Data:</label>
+                        <input type="date" id="data" name="data" class="form-control">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="periodo">Período:</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01">Opções</label>
+                            </div>
+                            <select name="periodo" class="custom-select" id="inputGroupSelect01">
+                                <option value="0" selected>Selecione o período...</option>
+                                <option value="m">Manhã</option>
+                                <option value="t">Tarde</option>
+                                <option value="n">Noite</option>
+                            </select>
+                        </div> 
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="turma">Turma:</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01">Opções</label>
+                            </div>
+                            <select name="turma" class="custom-select" id="inputGroupSelect01">
+                                <option value="0" selected>Selecione a turma...</option>
+                                {{#each turmas}}
+                                    <option value="{{_id}}">{{turma}}</option>
+                                {{/each}}
+                            </select>
+                        </div>  
+                    </div>    
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="sala">Sala:</label>
+                         <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01">Opções</label>
+                            </div>
+                            <select name="sala" id="sala" class="custom-select">
+                                <option value="0">Selecione a sala...</option>
+                                {{#each salas}}
+                                    <option value="{{_id}}">{{sala}}</option>
+                                {{/each}}
+                            </select>
+                        </div>    
+                    </div>                   
+                    <div class="form-group col-md-4">
+                        <label for="tecnico">Técnica(o):</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="inputGroupSelect01">Opções</label>
+                            </div>
+                            <select name="tecnico" class="custom-select" id="inputGroupSelect01">
+                                <option value="0" selected>Selecione o técnico...</option>
+                                {{#each tecnicos}}
+                                    <option value="{{_id}}">{{tecnico}}</option>
+                                {{/each}}
+                            </select>
+                        </div>                 
+                    </div>
+                    <div class="form-group col-md-4">
+                        
+                    </div> 
+                </div>               
+                <div class="form-group mt-3 align-right">
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                </div>                
+            </form>
+        </div>    
+    </div>
+</div>

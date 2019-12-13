@@ -99,7 +99,8 @@ app.post('/add-turma-db', (req, res) => {
             tecnico: req.body.tecnico
         }
 
-        Tecnico(novaTurma).save().then(() => {
+        
+        new Turma(novaTurma).save().then(() => {
            
             req.flash('success_msg', 'Turma cadastrada com sucesso!')
             res.redirect('/add-turma')
@@ -109,6 +110,7 @@ app.post('/add-turma-db', (req, res) => {
             req.flash('error_msg', 'Erro ao salvar a turma')
             res.redirect('/add-turma')            
         })
+        
         
     }
 
@@ -199,7 +201,10 @@ app.post('/add-tecnico-db', (req, res) => {
 })
 
 app.get('/list-turma', (req, res) => {
-    res.render('lists/list-turma')
+    
+    Turma.find().populate('tecnico').sort({turma: 'ASC'}).then((turmas) => {
+        res.render('lists/list-turma', {turmas: turmas})
+    })
 })
 
 app.get('/list-sala', (req, res) => {
@@ -243,6 +248,45 @@ app.post('/rem-sala-db', (req, res) => {
         req.flash('error_msg', 'Erro ao remover a sala')
     })
 })
+
+app.post('/rem-turma-db', (req, res) => {
+
+    Turma.remove({_id: req.body.id}).then(() => {
+        req.flash('success_msg', 'Turma removida com sucesso!')
+        res.redirect('/list-sala')
+    }).catch((err) => {
+        req.flash('error_msg', 'Erro ao remover a turma')
+    })
+})
+
+
+
+
+
+app.get('/list-mapa', (req, res) => {
+    res.render('lists/list-mapa')
+})
+
+app.get('/add-mapa', (req, res) => {
+    
+    Sala.find().sort({sala: 'ASC'}).then((salas) => {  
+        
+        Tecnico.find().sort({tecnico: 'ASC'}).then((tecnicos) => {
+
+            Turma.find().sort({turma: 'ASC'}).then((turmas) => {
+                res.render('forms/form-add-mapa', {salas: salas, tecnicos: tecnicos, turmas: turmas})
+            })
+            
+        })
+        
+    })
+    
+})
+
+app.get('/edit-mapa', (req, res) => {
+    res.render('forms/form-edit-mapa')
+})
+
 
 
 

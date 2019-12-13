@@ -1,15 +1,15 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-body">
-            <h4>Lista Salass</h4>
+            <h4>Lista Salas</h4>
             
             {{#each salas}}
-                <div class="card mt-4">
+                <div class="card mt-2">
                     <div class="card-body">
                         <p>
-                            {{sala}} <br>
-                            {{capacidade}} <br>
-                            {{tecnico.tecnico}}
+                            <strong>Sala: </strong> {{sala}} <br>
+                            <strong>Capacidade: </strong>{{capacidade}} <br>
+                            <strong>Técnica(o): </strong>{{tecnico.tecnico}}
                         </p>
                         <form action="/rem-sala-db" method="POST">
                             <div class="align-right">
@@ -19,7 +19,12 @@
                         </form>
                     </div>
                 </div>
-                
+            {{else}}    
+                <div class="card mt-2">
+                    <div class="card-body">
+                        <h5>Não há salas para serem exibidas!</h5>
+                    </div>
+                </div>
             {{/each}}
 
         </div>    

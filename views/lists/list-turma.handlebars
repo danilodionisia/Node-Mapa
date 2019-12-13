@@ -1,0 +1,32 @@
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h4>Lista Turmas</h4>
+            
+            {{#each turmas}}
+                <div class="card mt-2">
+                    <div class="card-body">
+                        <p>
+                            <strong>Turma: </strong> {{turma}} <br>
+                            <strong>Oferta: </strong> {{oferta}} <br>
+                            <strong>Técnica: </strong> {{tecnico.tecnico}}
+                        </p>
+                        <form action="/rem-turma-db" method="POST">
+                            <div class="align-right">
+                                <input type="hidden" name="id" value="{{_id}}">
+                                <button class="btn btn-danger" type="submit">Remover</button>
+                            </div>                            
+                        </form>
+                    </div>
+                </div>
+            {{else}}    
+                <div class="card mt-2">
+                    <div class="card-body">
+                        <h5>Não há turmas para serem exibidas!</h5>
+                    </div>
+                </div>
+            {{/each}}
+
+        </div>    
+    </div>
+</div>

@@ -4,9 +4,9 @@
             <h4>Lista Técnicos</h4>
             
             {{#each tecnicos}}
-                <div class="card mt-4">
+                <div class="card mt-2">
                     <div class="card-body">
-                        <p>{{tecnico}}</p>
+                        <strong>Técnica(o)</strong> {{tecnico}}</p>
                         <form action="/rem-tecnico-db" method="POST">
                             <div class="align-right">
                                 <input type="hidden" name="id" value="{{_id}}">
@@ -15,8 +15,13 @@
                         </form>
                     </div>
                 </div>
-                
-            {{/each}}
+            {{else}}    
+                <div class="card mt-2">
+                    <div class="card-body">
+                        <h5>Não há técnicos para serem exibidos!</h5>
+                    </div>
+                </div>
+            {{/each}} 
 
         </div>    
     </div>
