@@ -25,10 +25,10 @@
                                 <label class="input-group-text" for="inputGroupSelect01">Opções</label>
                             </div>
                             <select name="tecnico" class="custom-select" id="inputGroupSelect01">
-                                <option selected>Escolher...</option>
-                                <option value="1">Um</option>
-                                <option value="2">Dois</option>
-                                <option value="3">Três</option>
+                                <option value="0" selected>Escolher...</option>
+                                {{#each tecnico}}
+                                    <option value="{{_id}}">{{tecnico}}</option>
+                                {{/each}}
                             </select>
                         </div>
                     </div>                    

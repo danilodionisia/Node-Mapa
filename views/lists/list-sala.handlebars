@@ -1,0 +1,27 @@
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h4>Lista Salass</h4>
+            
+            {{#each salas}}
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <p>
+                            {{sala}} <br>
+                            {{capacidade}} <br>
+                            {{tecnico.tecnico}}
+                        </p>
+                        <form action="/rem-sala-db" method="POST">
+                            <div class="align-right">
+                                <input type="hidden" name="id" value="{{_id}}">
+                                <button class="btn btn-danger" type="submit">Remover</button>
+                            </div>                            
+                        </form>
+                    </div>
+                </div>
+                
+            {{/each}}
+
+        </div>    
+    </div>
+</div>

@@ -13,6 +13,9 @@ require('./models/Tecnico')
 require('./models/Sala')
 
 const Sala = mongoose.model('salas')
+const Tecnico = mongoose.model('tecnicos')
+const Turma = mongoose.model('turmas')
+
 
 //configuração do flash messages
 app.use(session({
@@ -53,7 +56,17 @@ app.get('/', (req, res) => {
 })
 
 app.get('/add-turma', (req, res) => {
-    res.render('forms/form-add-turma')
+    
+    Tecnico.find().sort({tecnico: 'ASC'}).then((tecnico) => {        
+
+        res.render('forms/form-add-turma', {tecnico: tecnico})
+
+    }).catch(() => {
+        req.flash('error_msg', 'Erro ao carregar os técnicos')
+        res.redirect('/')
+    })
+
+    
 })
 
 app.post('/add-turma-db', (req, res) => {
@@ -68,23 +81,44 @@ app.post('/add-turma-db', (req, res) => {
         erros.push({texto: 'Turma inválida!'})
     }
 
-    if(!req.body.tecnico || typeof req.body.tecnico == undefined || req.body.tecnico == 'Escolher...' || req.body.tecnico == null){
+    if(!req.body.tecnico || typeof req.body.tecnico == undefined || req.body.tecnico == 0 || req.body.tecnico == null){
         erros.push({texto: 'Técnica(o) inválida(o)!'})
     }
 
     if(erros.length > 0){
-        res.render('forms/form-add-turma', {erros: erros})
+
+        Tecnico.find().sort({tecnico: 'ASC'}).then((tecnico) => {
+            res.render('forms/form-add-turma', {erros: erros, tecnico: tecnico})
+        })    
     }
     else{
-        req.flash('success_msg', 'Turma cadastrada com sucesso!')
-        res.redirect('/add-turma')
+
+        const novaTurma = {
+            turma: req.body.turma,
+            oferta: req.body.oferta,
+            tecnico: req.body.tecnico
+        }
+
+        Tecnico(novaTurma).save().then(() => {
+           
+            req.flash('success_msg', 'Turma cadastrada com sucesso!')
+            res.redirect('/add-turma')
+           
+        }).catch((err) => {
+
+            req.flash('error_msg', 'Erro ao salvar a turma')
+            res.redirect('/add-turma')            
+        })
+        
     }
 
 })
 
 app.get('/add-sala', (req, res) => {
     
-    res.render('forms/form-add-sala')
+    Tecnico.find().sort({tecnico: 'ASC'}).then((tecnico) => {
+        res.render('forms/form-add-sala', {tecnico: tecnico})
+    })    
 })
 
 app.post('/add-sala-db', (req, res) => {
@@ -95,7 +129,7 @@ app.post('/add-sala-db', (req, res) => {
         erros.push({texto: 'Sala inválida!'})
     }
 
-    if(!req.body.capacidade || typeof req.body.capacidade == undefined || req.body.capacidade == null){
+    if(!req.body.capacidade || typeof req.body.capacidade == undefined || req.body.capacidade == null || req.body.capacidade < 1 || req.body.capacidade > 100){
         erros.push({texto: 'Capacidade inválida!'})
     }
 
@@ -103,19 +137,38 @@ app.post('/add-sala-db', (req, res) => {
         erros.push({texto: 'Técnica(o) inválida(o)!'})
     }
 
-    if(erros.length > 0){
-        res.render('forms/form-add-sala', {erros: erros})
+    if(erros.length > 0){       
+        
+        Tecnico.find().sort({tecnico: 'ASC'}).then((tecnico) => {
+            res.render('forms/form-add-sala', {tecnico: tecnico, erros: erros})
+        })
+        
     }
     else{
-        req.flash('success_msg', 'Sala cadastrada com sucesso!')
-        res.redirect('/add-sala')
+
+        const novaSala = {
+            sala: req.body.sala,
+            capacidade: req.body.capacidade,
+            tecnico: req.body.tecnico
+        }
+        
+        new Sala(novaSala).save().then(() => {
+            req.flash('success_msg', 'Sala cadastrada com sucesso!')               
+            res.redirect('/add-sala')
+           
+        }).catch((err) => {
+            req.flash('error_msg', 'Erro ao cadastrar a sala!')              
+            res.redirect('/add-sala')
+        })
     }
 
 })
 
-app.get('/add-tecnico', (req, res) => {
+
+app.get('/add-tecnico', (req, res) => {    
     res.render('forms/form-add-tecnico')
 })
+
 
 app.post('/add-tecnico-db', (req, res) => {
 
@@ -125,11 +178,22 @@ app.post('/add-tecnico-db', (req, res) => {
         erros.push({texto: 'Técnica(o) inválida(o)!'})
     }
 
-    if(erros.length > 0){
+    if(erros.length > 0){        
         res.render('forms/form-add-tecnico', {erros: erros})
     }else{
-        req.flash('success_msg', 'Técnica(o) cadastrada(o) com sucesso!')
-        res.redirect('/add-tecnico')
+
+        const novoTecnico = {
+            tecnico: req.body.tecnico
+        }
+
+        new Tecnico(novoTecnico).save().then(() => {
+            req.flash('success_msg', 'Técnica(o) cadastrada(o) com sucesso!')
+            res.redirect('/add-tecnico')
+        }).catch(() => {
+            req.flash('error_msg', 'Erro ao inserir Técnica(o)!')
+            res.redirect('/add-tecnico')
+        })
+        
     }
 
 })
@@ -139,12 +203,48 @@ app.get('/list-turma', (req, res) => {
 })
 
 app.get('/list-sala', (req, res) => {
-    res.render('lists/list-sala')
+    
+    Sala.find().populate('tecnico').sort({sala: 'ASC'}).then((salas) => {
+        res.render('lists/list-sala', {salas: salas})
+    })
+    
 })
 
 app.get('/list-tecnico', (req, res) => {
-    res.render('lists/list-tecnico')
+
+    Tecnico.find().sort({tecnico: 'ASC'}).then((tecnicos) => {
+
+        res.render('lists/list-tecnico', {tecnicos: tecnicos})
+
+    }).catch((err) => {
+        req.flash('error_msg', 'Erro ao listar técnicos')
+    })
+    
 })
+
+
+
+app.post('/rem-tecnico-db', (req, res) => {
+
+    Tecnico.remove({_id: req.body.id}).then(() => {
+        req.flash('success_msg', 'Técnico removido com sucesso!')
+        res.redirect('/list-tecnico')
+    }).catch((err) => {
+        req.flash('error_msg', 'Erro ao remover o técnico')
+    })
+})
+
+app.post('/rem-sala-db', (req, res) => {
+
+    Sala.remove({_id: req.body.id}).then(() => {
+        req.flash('success_msg', 'Sala removida com sucesso!')
+        res.redirect('/list-sala')
+    }).catch((err) => {
+        req.flash('error_msg', 'Erro ao remover a sala')
+    })
+})
+
+
 
 
 
