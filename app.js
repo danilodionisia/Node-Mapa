@@ -11,10 +11,12 @@ const mongoose = require('mongoose')
 require('./models/Turma')
 require('./models/Tecnico')
 require('./models/Sala')
+require('./models/Mapa')
 
 const Sala = mongoose.model('salas')
 const Tecnico = mongoose.model('tecnicos')
 const Turma = mongoose.model('turmas')
+const Mapa = mongoose.model('mapas')
 
 
 //configuração do flash messages
@@ -281,6 +283,17 @@ app.get('/add-mapa', (req, res) => {
         
     })
     
+})
+
+
+app.post('/add-mapa-db', (req, res) => {
+
+    var erros = []
+
+    if(!req.body.data || typeof req.body.data == undefined || req.body.data == null){
+        erros.push({texto: 'Data inválida!'})
+    }
+
 })
 
 app.get('/edit-mapa', (req, res) => {
