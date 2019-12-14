@@ -6,3 +6,11 @@
 .align-right{
     text-align: right;
 }
+
+.form-check-input{
+   margin-left: 3px;
+}
+
+.form-check-label{
+    margin-left: 20px;
+}

@@ -294,6 +294,29 @@ app.post('/add-mapa-db', (req, res) => {
         erros.push({texto: 'Data inválida!'})
     }
 
+    if(!req.body.sala || typeof req.body.sala == undefined || req.body.sala == null || req.body.sala == 0){
+        erros.push({texto: 'Sala inválida'})
+    }
+
+    if(!req.body.turma || typeof req.body.turma == undefined || req.body.turma == null || req.body.turma == 0){
+        erros.push({texto: 'Turma inválida'})
+    }
+
+    if(!req.body.tecnico || typeof req.body.tecnico == undefined || req.body.tecnico == null || req.body.tecnico == 0){
+        erros.push({texto: 'Técnico inválida'})
+    }
+
+    if(!req.body.periodo || typeof req.body.periodo == undefined || req.body.periodo == null){
+        erros.push({texto: 'Período inválido!'})
+    }
+    
+
+    if(erros.length > 0){
+        res.render('forms/form-add-mapa', {erros: erros})
+    }else{
+        res.send('certo')
+    }
+
 })
 
 app.get('/edit-mapa', (req, res) => {
