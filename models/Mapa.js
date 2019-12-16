@@ -22,7 +22,7 @@ const Mapa = new Schema({
         required: true
     },
     data: {
-        type: Date,
+        type: String,
         required: true
     }
 })

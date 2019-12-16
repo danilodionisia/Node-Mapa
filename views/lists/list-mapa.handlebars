@@ -1,0 +1,17 @@
+{{#each mapas}}
+    <div class="card mt-2">
+        <div class="card-body">
+            <p>Data: {{data}}</p>
+            <p>Período: {{periodo}}</p>
+            <p>Técnica(o): {{tecnico.tecnico}}</p>
+            <p>Turma: {{turma.turma}}</p>
+            <p>Sala: {{sala.sala}}</p>
+        </div>
+    </div>
+{{else}}
+    <div class="card">
+        <div class="card-body">
+            <h4>Não há mapa para listar</h4>
+        </div>
+    </div>
+{{/each}}

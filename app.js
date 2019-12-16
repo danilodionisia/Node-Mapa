@@ -1,22 +1,23 @@
 //declaração das constantes do projeto
-const express = require('express')
+const express = require('express');
 const app = express();
-const bodyParser = require('body-parser')
-const handlebars = require('express-handlebars')
-const path = require('path')
-const flash = require('connect-flash')
-const session = require('express-session')
-const mongoose = require('mongoose')
+const bodyParser = require('body-parser');
+const handlebars = require('express-handlebars');
+const path = require('path');
+const flash = require('connect-flash');
+const session = require('express-session');
+const mongoose = require('mongoose');
+const moment = require('moment')
 
-require('./models/Turma')
-require('./models/Tecnico')
-require('./models/Sala')
-require('./models/Mapa')
+require('./models/Turma');
+require('./models/Tecnico');
+require('./models/Sala');
+require('./models/Mapa');
 
-const Sala = mongoose.model('salas')
-const Tecnico = mongoose.model('tecnicos')
-const Turma = mongoose.model('turmas')
-const Mapa = mongoose.model('mapas')
+const Sala = mongoose.model('salas');
+const Tecnico = mongoose.model('tecnicos');
+const Turma = mongoose.model('turmas');
+const Mapa = mongoose.model('mapas');
 
 
 //configuração do flash messages
@@ -24,74 +25,91 @@ app.use(session({
     secret: 'mapa',
     resave: true,
     saveUninitialized: true
-}))
-app.use(flash())
+}));
+app.use(flash());
 
 app.use((req, res, next) => {
-    res.locals.success_msg = req.flash('success_msg')
-    res.locals.error_msg = req.flash('error_msg')
-    next()
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    next();
 })
 
 //configuração do mongodb
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/mapaapp').then(() => {
-    console.log("connected to mongodb")
+    console.log("connected to mongodb");
 }).catch((err) => {
-    console.log(err)
+    console.log(err);
 })
 
 //configuração inicial body-parser
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 //configuração inicial do handlebars
-app.engine('handlebars', handlebars({defaultLayout: 'main'}))
-app.set('view engine', 'handlebars')
+app.engine('handlebars', handlebars({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
 
 //configuraçaõ dos arquivos estáticos (bootstrap)
-app.use(express.static(path.join(__dirname, "public")))
+app.use(express.static(path.join(__dirname, "public")));
 
 //configuração das rotas
 app.get('/', (req, res) => {
-    res.render('index')
-})
+   
+    let now = moment();
+
+    //var data = now.format('DD/MM/YYYY');
+
+    var inf = [{path: 'tecnico', select: 'tecnico'}, {path: 'turma', select: 'turma'}, {path: 'sala', select: 'sala'}];
+
+    Mapa.find().populate(inf).sort({data: 'DESC'}).then((mapas) => {
+
+       res.render('index', {mapas: mapas});
+
+    }).catch((err) => {
+
+       req.flash('error_msg', 'Erro ao carregar o mapa!');
+       res.redirect('/');
+
+    });
+    
+});
 
 app.get('/add-turma', (req, res) => {
     
     Tecnico.find().sort({tecnico: 'ASC'}).then((tecnico) => {        
 
-        res.render('forms/form-add-turma', {tecnico: tecnico})
+        res.render('forms/form-add-turma', {tecnico: tecnico});
 
     }).catch(() => {
-        req.flash('error_msg', 'Erro ao carregar os técnicos')
-        res.redirect('/')
-    })
+        req.flash('error_msg', 'Erro ao carregar os técnicos');
+        res.redirect('/');
+    });
 
     
-})
+});
 
 app.post('/add-turma-db', (req, res) => {
 
-    var erros = []
+    var erros = [];
 
     if(!req.body.turma || typeof req.body.turma == undefined || req.body.turma == null){
-        erros.push({texto: 'Turma inválida!'})
+        erros.push({texto: 'Turma inválida!'});
     }
 
     if(!req.body.oferta || typeof req.body.oferta == undefined || req.body.oferta == null){
-        erros.push({texto: 'Turma inválida!'})
+        erros.push({texto: 'Turma inválida!'});
     }
 
     if(!req.body.tecnico || typeof req.body.tecnico == undefined || req.body.tecnico == 0 || req.body.tecnico == null){
-        erros.push({texto: 'Técnica(o) inválida(o)!'})
+        erros.push({texto: 'Técnica(o) inválida(o)!'});
     }
 
     if(erros.length > 0){
 
         Tecnico.find().sort({tecnico: 'ASC'}).then((tecnico) => {
-            res.render('forms/form-add-turma', {erros: erros, tecnico: tecnico})
-        })    
+            res.render('forms/form-add-turma', {erros: erros, tecnico: tecnico});
+        });
     }
     else{
 
@@ -104,48 +122,48 @@ app.post('/add-turma-db', (req, res) => {
         
         new Turma(novaTurma).save().then(() => {
            
-            req.flash('success_msg', 'Turma cadastrada com sucesso!')
-            res.redirect('/add-turma')
+            req.flash('success_msg', 'Turma cadastrada com sucesso!');
+            res.redirect('/add-turma');
            
         }).catch((err) => {
 
-            req.flash('error_msg', 'Erro ao salvar a turma')
-            res.redirect('/add-turma')            
-        })
+            req.flash('error_msg', 'Erro ao salvar a turma');
+            res.redirect('/add-turma');
+        });
         
         
     }
 
-})
+});
 
 app.get('/add-sala', (req, res) => {
     
     Tecnico.find().sort({tecnico: 'ASC'}).then((tecnico) => {
-        res.render('forms/form-add-sala', {tecnico: tecnico})
-    })    
-})
+        res.render('forms/form-add-sala', {tecnico: tecnico});
+    });    
+});
 
 app.post('/add-sala-db', (req, res) => {
 
-    var erros = []
+    var erros = [];
 
     if(!req.body.sala || typeof req.body.sala == undefined || req.body.sala == null){
-        erros.push({texto: 'Sala inválida!'})
+        erros.push({texto: 'Sala inválida!'});
     }
 
     if(!req.body.capacidade || typeof req.body.capacidade == undefined || req.body.capacidade == null || req.body.capacidade < 1 || req.body.capacidade > 100){
-        erros.push({texto: 'Capacidade inválida!'})
+        erros.push({texto: 'Capacidade inválida!'});
     }
 
     if(!req.body.tecnico || typeof req.body.tecnico == undefined || req.body.tecnico == 'Escolher...' || req.body.tecnico == null){
-        erros.push({texto: 'Técnica(o) inválida(o)!'})
+        erros.push({texto: 'Técnica(o) inválida(o)!'});
     }
 
     if(erros.length > 0){       
         
         Tecnico.find().sort({tecnico: 'ASC'}).then((tecnico) => {
-            res.render('forms/form-add-sala', {tecnico: tecnico, erros: erros})
-        })
+            res.render('forms/form-add-sala', {tecnico: tecnico, erros: erros});
+        });
         
     }
     else{
@@ -157,33 +175,33 @@ app.post('/add-sala-db', (req, res) => {
         }
         
         new Sala(novaSala).save().then(() => {
-            req.flash('success_msg', 'Sala cadastrada com sucesso!')               
-            res.redirect('/add-sala')
+            req.flash('success_msg', 'Sala cadastrada com sucesso!');
+            res.redirect('/add-sala');
            
         }).catch((err) => {
-            req.flash('error_msg', 'Erro ao cadastrar a sala!')              
-            res.redirect('/add-sala')
-        })
+            req.flash('error_msg', 'Erro ao cadastrar a sala!');
+            res.redirect('/add-sala');
+        });
     }
 
-})
+});
 
 
 app.get('/add-tecnico', (req, res) => {    
-    res.render('forms/form-add-tecnico')
-})
+    res.render('forms/form-add-tecnico');
+});
 
 
 app.post('/add-tecnico-db', (req, res) => {
 
-    var erros = []
+    var erros = [];
 
     if(!req.body.tecnico || typeof req.body.tecnico == undefined || req.body.tecnico == null){
-        erros.push({texto: 'Técnica(o) inválida(o)!'})
+        erros.push({texto: 'Técnica(o) inválida(o)!'});
     }
 
     if(erros.length > 0){        
-        res.render('forms/form-add-tecnico', {erros: erros})
+        res.render('forms/form-add-tecnico', {erros: erros});
     }else{
 
         const novoTecnico = {
@@ -191,82 +209,101 @@ app.post('/add-tecnico-db', (req, res) => {
         }
 
         new Tecnico(novoTecnico).save().then(() => {
-            req.flash('success_msg', 'Técnica(o) cadastrada(o) com sucesso!')
-            res.redirect('/add-tecnico')
+            req.flash('success_msg', 'Técnica(o) cadastrada(o) com sucesso!');
+            res.redirect('/add-tecnico');
         }).catch(() => {
-            req.flash('error_msg', 'Erro ao inserir Técnica(o)!')
-            res.redirect('/add-tecnico')
-        })
+            req.flash('error_msg', 'Erro ao inserir Técnica(o)!');
+            res.redirect('/add-tecnico');
+        });
         
     }
 
-})
+});
 
 app.get('/list-turma', (req, res) => {
     
     Turma.find().populate('tecnico').sort({turma: 'ASC'}).then((turmas) => {
-        res.render('lists/list-turma', {turmas: turmas})
-    })
-})
+        res.render('lists/list-turma', {turmas: turmas});
+    });
+});
 
 app.get('/list-sala', (req, res) => {
     
     Sala.find().populate('tecnico').sort({sala: 'ASC'}).then((salas) => {
-        res.render('lists/list-sala', {salas: salas})
-    })
+        res.render('lists/list-sala', {salas: salas});
+    });
     
-})
+});
 
 app.get('/list-tecnico', (req, res) => {
 
     Tecnico.find().sort({tecnico: 'ASC'}).then((tecnicos) => {
 
-        res.render('lists/list-tecnico', {tecnicos: tecnicos})
+        res.render('lists/list-tecnico', {tecnicos: tecnicos});
 
     }).catch((err) => {
-        req.flash('error_msg', 'Erro ao listar técnicos')
-    })
+        req.flash('error_msg', 'Erro ao listar técnicos');
+    });
     
-})
+});
 
 
 
 app.post('/rem-tecnico-db', (req, res) => {
 
     Tecnico.remove({_id: req.body.id}).then(() => {
-        req.flash('success_msg', 'Técnico removido com sucesso!')
-        res.redirect('/list-tecnico')
+        req.flash('success_msg', 'Técnico removido com sucesso!');
+        res.redirect('/list-tecnico');
     }).catch((err) => {
-        req.flash('error_msg', 'Erro ao remover o técnico')
-    })
-})
+        req.flash('error_msg', 'Erro ao remover o técnico');
+    });
+});
 
 app.post('/rem-sala-db', (req, res) => {
 
     Sala.remove({_id: req.body.id}).then(() => {
-        req.flash('success_msg', 'Sala removida com sucesso!')
-        res.redirect('/list-sala')
+        req.flash('success_msg', 'Sala removida com sucesso!');
+        res.redirect('/list-sala');
     }).catch((err) => {
-        req.flash('error_msg', 'Erro ao remover a sala')
-    })
-})
+        req.flash('error_msg', 'Erro ao remover a sala');
+    });
+});
 
 app.post('/rem-turma-db', (req, res) => {
 
     Turma.remove({_id: req.body.id}).then(() => {
-        req.flash('success_msg', 'Turma removida com sucesso!')
-        res.redirect('/list-sala')
+        req.flash('success_msg', 'Turma removida com sucesso!');
+        res.redirect('/list-sala');
     }).catch((err) => {
-        req.flash('error_msg', 'Erro ao remover a turma')
-    })
-})
+        req.flash('error_msg', 'Erro ao remover a turma');
+    });
+});
 
 
 
 
 
 app.get('/list-mapa', (req, res) => {
-    res.render('lists/list-mapa')
+
+    /*
+    
+     Turma.find().populate('tecnico').sort({turma: 'ASC'}).then((turmas) => {
+        res.render('lists/list-turma', {turmas: turmas});
+    });
+    
+    */
+    var inf = [{path: 'tecnico', select: 'tecnico'}, {path: 'turma', select: 'turma'}, {path: 'sala', select: 'sala'}];
+    Mapa.find().populate(inf).sort({data: 'DESC'}).then((mapas) => {
+
+        res.render('lists/list-mapa', {mapas: mapas});
+
+    }).catch((err) => {
+
+        req.flash('error_msg', 'Erro ao carregar o mapa!');
+        res.redirect('/');
+
+    })
+    
 })
 
 app.get('/add-mapa', (req, res) => {
@@ -276,53 +313,87 @@ app.get('/add-mapa', (req, res) => {
         Tecnico.find().sort({tecnico: 'ASC'}).then((tecnicos) => {
 
             Turma.find().sort({turma: 'ASC'}).then((turmas) => {
-                res.render('forms/form-add-mapa', {salas: salas, tecnicos: tecnicos, turmas: turmas})
-            })
+                res.render('forms/form-add-mapa', {salas: salas, tecnicos: tecnicos, turmas: turmas});
+            });
             
-        })
+        });
         
-    })
+    });
     
-})
+});
 
 
 app.post('/add-mapa-db', (req, res) => {
 
-    var erros = []
+    var erros = [];
 
     if(!req.body.data || typeof req.body.data == undefined || req.body.data == null){
-        erros.push({texto: 'Data inválida!'})
+        erros.push({texto: 'Data inválida!'});
     }
 
     if(!req.body.sala || typeof req.body.sala == undefined || req.body.sala == null || req.body.sala == 0){
-        erros.push({texto: 'Sala inválida'})
+        erros.push({texto: 'Sala inválida'});
     }
 
     if(!req.body.turma || typeof req.body.turma == undefined || req.body.turma == null || req.body.turma == 0){
-        erros.push({texto: 'Turma inválida'})
+        erros.push({texto: 'Turma inválida'});
     }
 
     if(!req.body.tecnico || typeof req.body.tecnico == undefined || req.body.tecnico == null || req.body.tecnico == 0){
-        erros.push({texto: 'Técnico inválida'})
+        erros.push({texto: 'Técnico inválida'});
     }
 
     if(!req.body.periodo || typeof req.body.periodo == undefined || req.body.periodo == null){
-        erros.push({texto: 'Período inválido!'})
+        erros.push({texto: 'Período inválido!'});
     }
     
 
     if(erros.length > 0){
-        res.render('forms/form-add-mapa', {erros: erros})
+        res.render('forms/form-add-mapa', {erros: erros});
     }else{
-        res.send('certo')
-    }
+        
+        const novoMapa = {
 
-})
+            sala: req.body.sala,
+            tecnico: req.body.tecnico,
+            turma: req.body.turma,
+            periodo: req.body.periodo,
+            data: req.body.data
+        }
+
+        new Mapa(novoMapa).save().then(() => {
+            req.flash('success_msg', 'Adiocionado ao mapa de sala com sucesso!');
+            res.redirect('/add-mapa');
+        }).catch((err) => {
+            req.flash('error_msg', 'Erro ao adicionar no mapa de sala!');
+            req.redirect('/add-mapa');
+        });
+    };
+
+});
 
 app.get('/edit-mapa', (req, res) => {
-    res.render('forms/form-edit-mapa')
-})
+    res.render('forms/form-edit-mapa');
+});
 
+
+app.get('/remove-mapa-db/:id', (req, res) => {
+
+    Mapa.remove({_id: req.params.id}).then(() => {
+
+        req.flash('success_msg', 'Registro removido com sucesso!');
+        res.redirect('/');
+
+    }).catch((err) => {
+
+        req.flash('error_msg', 'Falha ao remover sucesso!');
+        res.redirect('/');
+
+    })
+
+    
+
+});
 
 
 
@@ -330,5 +401,5 @@ app.get('/edit-mapa', (req, res) => {
 
 //configuração doservidor
 app.listen(8080, () => {
-    console.log('Server running on port 8080')
-})
+    console.log('Server running on port 8080');
+});
