@@ -27,4 +27,5 @@ const Mapa = new Schema({
     }
 })
 
+
 mongoose.model('mapas', Mapa)

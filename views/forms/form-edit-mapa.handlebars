@@ -1,0 +1,21 @@
+<div class="container mt-4">
+    <p>Data: {{dataSys}}</p>
+</div>
+<div class="mt-2 flex-container">
+{{#each mapas}}    
+    <div>
+        <p>
+            <small><strong>{{data}}</strong></small><br>
+            <small>Período: {{periodo}}</small><br>
+            <small>Técnica(o): {{tecnico.tecnico}}</small><br>
+            <small><strong>{{turma.turma}}</strong></small><br> 
+            <small><strong>{{sala.sala}}</strong></small> 
+        </p> 
+        <a href="/remove-mapa-db/{{_id}}"><button class="btn btn-danger">Remover</button></a>      
+    </div>    
+{{else}}    
+    <div class="card-body">
+        <h4>Não há mapa para listar</h4>
+    </div>
+{{/each}}
+</div>

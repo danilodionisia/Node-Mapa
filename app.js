@@ -58,13 +58,14 @@ app.get('/', (req, res) => {
    
     let now = moment();
 
-    //var data = now.format('DD/MM/YYYY');
+    var dataSys = now.format('DD/MM/YYYY');
+    var dataSearch = now.format('YYYY-MM-DD');
 
     var inf = [{path: 'tecnico', select: 'tecnico'}, {path: 'turma', select: 'turma'}, {path: 'sala', select: 'sala'}];
 
-    Mapa.find().populate(inf).sort({data: 'DESC'}).then((mapas) => {
+    Mapa.find({data: {$eq: dataSearch}}).populate(inf).sort({data: 'DESC'}).then((mapas) => {
 
-       res.render('index', {mapas: mapas});
+       res.render('index', {mapas: mapas, dataSys: dataSys});
 
     }).catch((err) => {
 
@@ -352,22 +353,40 @@ app.post('/add-mapa-db', (req, res) => {
         res.render('forms/form-add-mapa', {erros: erros});
     }else{
         
-        const novoMapa = {
+        /*
+        var inf = [{path: 'tecnico', select: 'tecnico'}, {path: 'turma', select: 'turma'}, {path: 'sala', select: 'sala'}];    
+
+        Mapa.find({ $and: [{data: { $eq: req.body.data}}, {sala: {$eq: req.body.sala}}, {periodo: {$eq: req.body.periodo}}]}).populate(inf).then((mapas) => {
+            
+            if(mapas.length != null){
+                req.flash('error_msg','Período já agendado!');
+                res.redirect('/add-mapa'); 
+                console.log(mapas)           
+            }
+            
+        }).catch((err) => {
+            console.log(err);
+        })
+           */
+           
+
+            const novoMapa = {
 
             sala: req.body.sala,
             tecnico: req.body.tecnico,
             turma: req.body.turma,
             periodo: req.body.periodo,
             data: req.body.data
-        }
+            }
 
-        new Mapa(novoMapa).save().then(() => {
-            req.flash('success_msg', 'Adiocionado ao mapa de sala com sucesso!');
-            res.redirect('/add-mapa');
-        }).catch((err) => {
-            req.flash('error_msg', 'Erro ao adicionar no mapa de sala!');
-            req.redirect('/add-mapa');
-        });
+            new Mapa(novoMapa).save().then(() => {
+                req.flash('success_msg', 'Adiocionado ao mapa de sala com sucesso!');
+                res.redirect('/add-mapa');
+            }).catch((err) => {
+                req.flash('error_msg', 'Erro ao adicionar no mapa de sala!');
+                res.redirect('/add-mapa');
+            });
+        
     };
 
 });
@@ -382,12 +401,12 @@ app.get('/remove-mapa-db/:id', (req, res) => {
     Mapa.remove({_id: req.params.id}).then(() => {
 
         req.flash('success_msg', 'Registro removido com sucesso!');
-        res.redirect('/');
+        res.redirect('/show-mapas');
 
     }).catch((err) => {
 
         req.flash('error_msg', 'Falha ao remover sucesso!');
-        res.redirect('/');
+        res.redirect('/show-mapas');
 
     })
 
@@ -395,6 +414,65 @@ app.get('/remove-mapa-db/:id', (req, res) => {
 
 });
 
+
+app.get('/form-cons-mapa', (req, res) => {
+    res.render('forms/form-cons-mapa')
+})
+
+app.post('/search-mapa-data', (req, res) => {
+
+    var erros = [];
+
+    if(!req.body.dataInicial || typeof req.body.dataInicial == undefined || req.body.dataInicial == null){
+        erros.push({texto: 'Data inicial inválida!'})
+    }
+
+    if(!req.body.dataFinal || typeof req.body.dataFinal == undefined || req.body.dataFinal == null){
+        erros.push({texto: 'Data final inválida!'})
+    }
+
+    if(erros.length > 0){
+        res.render('forms/form-cons-mapa', {erros: erros})
+    }else{
+
+        var inf = [{path: 'tecnico', select: 'tecnico'}, {path: 'turma', select: 'turma'}, {path: 'sala', select: 'sala'}];
+
+        //Mapa.find({data: {$eq: dataSearch}}).populate(inf).sort({data: 'DESC'}).then((mapas)
+        Mapa.find({ $and: [ { data: {$gte: req.body.dataInicial}}, {data: {$lte: req.body.dataFinal}} ] }).populate(inf).sort({data: 'DESC'}).then((mapas) => {            
+            
+            res.render('lists/list-mapa-by-data', {mapas: mapas});
+            
+        }).catch((err) => {
+            req.flash('error_msg', 'Erro ao pesquisar as datas inseridas!' + err);
+            res.redirect('/form-cons-mapa')
+        })
+
+    }
+
+});
+
+
+app.get('/show-mapas', (req, res) => {
+
+    let now = moment();
+
+    var dataSys = now.format('DD/MM/YYYY');
+    var dataSearch = now.format('YYYY-MM-DD');
+
+    var inf = [{path: 'tecnico', select: 'tecnico'}, {path: 'turma', select: 'turma'}, {path: 'sala', select: 'sala'}];
+
+    Mapa.find({data: {$eq: dataSearch}}).populate(inf).sort({data: 'DESC'}).then((mapas) => {
+
+       res.render('forms/form-edit-mapa', {mapas: mapas, dataSys: dataSys});
+
+    }).catch((err) => {
+
+       req.flash('error_msg', 'Erro ao carregar o mapa!');
+       res.redirect('/');
+
+    });
+
+});
 
 
 
