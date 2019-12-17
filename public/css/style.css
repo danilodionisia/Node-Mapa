@@ -18,11 +18,31 @@
 .flex-container {
     display: flex;
     flex-wrap: nowrap;
-  }
+}
   
-  .flex-container > div {
+.flex-container > div {
     width: 220px;
     margin: 5px;
     background-color: #f2f2f2;
     text-align: center;
-  }
+}
+
+
+ @media print {
+    @page {size: landscape}
+	.print {display:block}
+    .btn-print, .nav {display:none;}
+    *{font-size: small;}
+}
+
+.Manhã{
+    background-color: gold;
+}
+
+.Tarde{
+    background-color: orange;
+}
+
+.Noite{
+    background-color: cyan;
+}

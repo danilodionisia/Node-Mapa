@@ -50,6 +50,7 @@ app.use(bodyParser.json());
 app.engine('handlebars', handlebars({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
+
 //configuraçaõ dos arquivos estáticos (bootstrap)
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -353,40 +354,52 @@ app.post('/add-mapa-db', (req, res) => {
         res.render('forms/form-add-mapa', {erros: erros});
     }else{
         
-        /*
-        var inf = [{path: 'tecnico', select: 'tecnico'}, {path: 'turma', select: 'turma'}, {path: 'sala', select: 'sala'}];    
+       
+        //var inf = [{path: 'tecnico', select: 'tecnico'}, {path: 'turma', select: 'turma'}, {path: 'sala', select: 'sala'}];    
 
-        Mapa.find({ $and: [{data: { $eq: req.body.data}}, {sala: {$eq: req.body.sala}}, {periodo: {$eq: req.body.periodo}}]}).populate(inf).then((mapas) => {
+        Mapa.find({ 
+                
+                $and: [
+                    {data: { $eq: req.body.data}}, 
+                    {sala: {$eq: req.body.sala}}, 
+                    {periodo: {$eq: req.body.periodo}}
+                ]
             
-            if(mapas.length != null){
-                req.flash('error_msg','Período já agendado!');
-                res.redirect('/add-mapa'); 
-                console.log(mapas)           
-            }
+            }).then((mapas) => {
+            
+                console.log(mapas + ' - ' + mapas.length);
+
+                if(mapas.length == 1){
+                    req.flash('error_msg','Período já agendado!');
+                    res.redirect('/add-mapa'); 
+                }else if(mapas.length == 0){
+
+                    const novoMapa = {
+
+                        sala: req.body.sala,
+                        tecnico: req.body.tecnico,
+                        turma: req.body.turma,
+                        periodo: req.body.periodo,
+                        data: req.body.data
+
+                    }
+            
+                    new Mapa(novoMapa).save().then(() => {
+                        req.flash('success_msg', 'Adiocionado ao mapa de sala com sucesso!');
+                        res.redirect('/add-mapa');
+                    }).catch((err) => {
+                        req.flash('error_msg', 'Erro ao adicionar no mapa de sala!');
+                        res.redirect('/add-mapa');
+                    });
+
+                    req.flash('success_msg','Registro salvo no mapa!');
+                    res.redirect('/add-mapa'); 
+                }
             
         }).catch((err) => {
             console.log(err);
-        })
-           */
+        });
            
-
-            const novoMapa = {
-
-            sala: req.body.sala,
-            tecnico: req.body.tecnico,
-            turma: req.body.turma,
-            periodo: req.body.periodo,
-            data: req.body.data
-            }
-
-            new Mapa(novoMapa).save().then(() => {
-                req.flash('success_msg', 'Adiocionado ao mapa de sala com sucesso!');
-                res.redirect('/add-mapa');
-            }).catch((err) => {
-                req.flash('error_msg', 'Erro ao adicionar no mapa de sala!');
-                res.redirect('/add-mapa');
-            });
-        
     };
 
 });

@@ -1,22 +1,50 @@
-<div class="container mt-4">
-    <p>Data: {{dataSys}}</p>
-</div>
-<div class="mt-2 flex-container">
-{{#each mapas}}    
-    <div>
-        <p>
-            <small><strong>{{data}}</strong></small><br>
-            <small>Período: {{periodo}}</small><br>
-            <small>Técnica(o): {{tecnico.tecnico}}</small><br>
-            <small><strong>{{turma.turma}}</strong></small><br> 
-            <small><strong>{{sala.sala}}</strong></small> 
-        </p>       
-    </div>    
-{{else}}    
-    <div class="card-body">
-        <h4>Não há mapa para listar</h4>
+<div class="print">
+    <div class="container mt-4">
+        <p><strong>Data: {{dataSys}}</strong></p>
     </div>
-{{/each}}
+    <div class="mt-2 flex-container">
+        {{#each mapas}}    
+            <div class="{{periodo}}">
+
+                <p>
+                    <small><strong>{{formatDate date day="numeric" month="long" year="numeric"}}{{data}}</strong></small><br>
+                    <small>Período: {{periodo}}</small><br>
+                    <small>Técnica(o): {{tecnico.tecnico}}</small><br>
+                    <small><strong>{{turma.turma}}</strong></small><br> 
+                    <small><strong>{{sala.sala}}</strong></small> 
+                </p>       
+            </div>        
+        {{else}}    
+            <div class="card-body">
+                <h4>Não há mapa para listar</h4>
+            </div>
+        {{/each}}
+    </div>
+    <button class="btn-print btn btn-success mt-4">Imprimir</button>
+
+    <p>{{formatNumber price style="currency" currency="USD"}}</p>
+
+    var intlData = {
+    locales: 'en-US'
+}
+
+var context = {
+    price: 1000
+};
+
+var html = template(context, {
+    data: {intl: intlData}
+});
+
+
 </div>
+<script>
+(function( w, d ) {
+   'use strict'; 
+
+   d.querySelector( '.btn-print' ).addEventListener( 'click', function() { w.print(); }, false );
+
+}( window, document ));
+</script>
 
 
