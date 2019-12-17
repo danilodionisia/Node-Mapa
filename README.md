@@ -13,6 +13,7 @@
 1. Reserva de sala de aula (sem conflitos)
 1. Consultar reservas já efeutadas
 1. Alterar reservas
+1. Imprimir o mapa das salas por data
 
 ## 
 
