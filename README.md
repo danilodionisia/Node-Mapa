@@ -15,8 +15,7 @@
 1. Alterar reservas
 1. Imprimir o mapa das salas por data
 
-## 
-[!TIP]
+###
 Fique á vontade para baixar e utilizar essa aplicação.
 Críticas construtivas e sugestões serão muito bem-vindas!
 Aproveite!
