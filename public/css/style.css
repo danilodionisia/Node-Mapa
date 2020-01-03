@@ -28,12 +28,7 @@
 }
 
 
- @media print {
-    @page {size: landscape}
-	.print {display:block}
-    .btn-print, .nav {display:none;}
-    *{font-size: small;}
-}
+
 
 .Manhã{
     background-color: gold;
@@ -45,4 +40,12 @@
 
 .Noite{
     background-color: cyan;
+}
+
+
+@media print {
+    @page {size: landscape}
+	.print {display:block}
+    .btn-print, .nav {display:none;}
+    *{font-size: small;}
 }

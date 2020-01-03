@@ -5,9 +5,9 @@
     <div class="mt-2 flex-container">
         {{#each mapas}}    
             <div class="{{periodo}}">
-
                 <p>
-                    <small><strong>{{formatDate date day="numeric" month="long" year="numeric"}}{{data}}</strong></small><br>
+                    <input type="hidden" class="dataIni" value="{{data}}">
+                    <small><strong class="dataFin">{{data}}</strong></small><br>
                     <small>Período: {{periodo}}</small><br>
                     <small>Técnica(o): {{tecnico.tecnico}}</small><br>
                     <small><strong>{{turma.turma}}</strong></small><br> 
@@ -20,23 +20,7 @@
             </div>
         {{/each}}
     </div>
-    <button class="btn-print btn btn-success mt-4">Imprimir</button>
-
-    <p>{{formatNumber price style="currency" currency="USD"}}</p>
-
-    var intlData = {
-    locales: 'en-US'
-}
-
-var context = {
-    price: 1000
-};
-
-var html = template(context, {
-    data: {intl: intlData}
-});
-
-
+    <button class="btn-print btn btn-success mt-4" id="imprimir">Imprimir</button>
 </div>
 <script>
 (function( w, d ) {
@@ -46,5 +30,57 @@ var html = template(context, {
 
 }( window, document ));
 </script>
+<script>
+    
+    function setData() {
+        
+        let d = document.getElementsByClassName('dataIni').length;
+        let c = 0;
+
+        while(c < d){
+
+            let dataBruta = document.getElementsByClassName('dataIni')[c].value;
+            
+            //2020-01-03
+            let dia = dataBruta.substr(8, 2);
+            let mes = dataBruta.substr(5, 2);
+            let ano = dataBruta.substr(0, 4);
+            
+            document.getElementsByClassName('dataFin')[c].innerHTML = dia + '/' + mes + '/' + ano;
+            c++;
+        }
+
+        let qtdDivsM = document.getElementsByClassName('Manhã').length;
+        let cm = 0;
+
+        while(cm < qtdDivsM){
+            document.getElementsByClassName('Manhã')[cm].style = 'background-color: #81ecec';
+            cm++;
+        }
+
+        
+        let qtdDivsT = document.getElementsByClassName('Tarde').length;
+        let ct = 0;
+
+        while(ct < qtdDivsT){
+            document.getElementsByClassName('Tarde')[ct].style = 'background-color: #ffeaa7';
+            ct++;
+        }
+
+        let qtdDivsN = document.getElementsByClassName('Noite').length;
+        let cn = 0;
+
+        while(cn < qtdDivsN){
+            document.getElementsByClassName('Noite')[cn].style = 'background-color: #fab1a0';
+            cn++;
+        }
+        
+                
+
+    }
+
+    window.onload=setData;   
+</script>
+
 
 

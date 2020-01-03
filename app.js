@@ -64,7 +64,7 @@ app.get('/', (req, res) => {
 
     var inf = [{path: 'tecnico', select: 'tecnico'}, {path: 'turma', select: 'turma'}, {path: 'sala', select: 'sala'}];
 
-    Mapa.find({data: {$eq: dataSearch}}).populate(inf).sort({data: 'DESC'}).then((mapas) => {
+    Mapa.find({data: {$eq: dataSearch}}).populate(inf).sort({data: 'DESC', periodo: 'ASC'}).then((mapas) => {
 
        res.render('index', {mapas: mapas, dataSys: dataSys});
 

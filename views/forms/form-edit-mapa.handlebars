@@ -5,7 +5,8 @@
 {{#each mapas}}    
     <div>
         <p>
-            <small><strong>{{data}}</strong></small><br>
+            <input type="hidden" class="dataIni" value="{{data}}">
+            <small><strong class="dataFin">{{data}}</strong></small><br>
             <small>Período: {{periodo}}</small><br>
             <small>Técnica(o): {{tecnico.tecnico}}</small><br>
             <small><strong>{{turma.turma}}</strong></small><br> 
@@ -19,3 +20,28 @@
     </div>
 {{/each}}
 </div>
+<script>
+    
+    function setData() {
+        
+        let d = document.getElementsByClassName('dataIni').length;
+        let c = 0;
+
+        while(c < d){
+
+            let dataBruta = document.getElementsByClassName('dataIni')[c].value;
+            
+            //2020-01-03
+            let dia = dataBruta.substr(8, 2);
+            let mes = dataBruta.substr(5, 2);
+            let ano = dataBruta.substr(0, 4);
+            
+            document.getElementsByClassName('dataFin')[c].innerHTML = dia + '/' + mes + '/' + ano;
+            c++
+        }
+        
+
+    }
+
+    window.onload=setData;   
+</script>
