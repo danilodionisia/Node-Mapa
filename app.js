@@ -7,7 +7,8 @@ const path = require('path');
 const flash = require('connect-flash');
 const session = require('express-session');
 const mongoose = require('mongoose');
-const moment = require('moment')
+const moment = require('moment');
+const usuarios = require('./routes/usuario')
 
 require('./models/Turma');
 require('./models/Tecnico');
@@ -488,7 +489,7 @@ app.get('/show-mapas', (req, res) => {
 });
 
 
-
+app.use('/usuarios', usuarios);
 
 //configuração doservidor
 app.listen(8080, () => {
