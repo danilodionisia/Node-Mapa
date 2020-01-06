@@ -49,7 +49,8 @@ app.use((req, res, next) => {
 
 //configuração do mongodb
 mongoose.Promise = global.Promise;
-mongoose.connect(db.mongoURI).then(() => {
+//mongoose.connect(db.mongoURI).then(() => {
+mongoose.connect('mongodb+srv://danilo:ruth130178@cluster0-q4ydk.mongodb.net/test?retryWrites=true&w=majority').then(() => {
     console.log("connected to mongodb");
 }).catch((err) => {
     console.log(err);
