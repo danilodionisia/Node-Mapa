@@ -9,16 +9,22 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const moment = require('moment');
 const usuarios = require('./routes/usuario')
+const passport = require('passport')
+require('./config/auth')(passport)
 
 require('./models/Turma');
 require('./models/Tecnico');
 require('./models/Sala');
 require('./models/Mapa');
 
+const db = require('./config/db')
+
 const Sala = mongoose.model('salas');
 const Tecnico = mongoose.model('tecnicos');
 const Turma = mongoose.model('turmas');
 const Mapa = mongoose.model('mapas');
+
+const {eAdmin} = require('./helpers/eAdmin');
 
 
 //configuração do flash messages
@@ -27,17 +33,23 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(flash());
 
 app.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    res.locals.user = req.user || null;
     next();
 })
 
 //configuração do mongodb
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/mapaapp').then(() => {
+mongoose.connect(db.mongoURI).then(() => {
     console.log("connected to mongodb");
 }).catch((err) => {
     console.log(err);
@@ -78,7 +90,7 @@ app.get('/', (req, res) => {
     
 });
 
-app.get('/add-turma', (req, res) => {
+app.get('/add-turma', eAdmin, (req, res) => {
     
     Tecnico.find().sort({tecnico: 'ASC'}).then((tecnico) => {        
 
@@ -92,7 +104,7 @@ app.get('/add-turma', (req, res) => {
     
 });
 
-app.post('/add-turma-db', (req, res) => {
+app.post('/add-turma-db', eAdmin, (req, res) => {
 
     var erros = [];
 
@@ -139,7 +151,7 @@ app.post('/add-turma-db', (req, res) => {
 
 });
 
-app.get('/add-sala', (req, res) => {
+app.get('/add-sala', eAdmin, (req, res) => {
     
     Tecnico.find().sort({tecnico: 'ASC'}).then((tecnico) => {
         res.render('forms/form-add-sala', {tecnico: tecnico});
@@ -190,7 +202,7 @@ app.post('/add-sala-db', (req, res) => {
 });
 
 
-app.get('/add-tecnico', (req, res) => {    
+app.get('/add-tecnico', eAdmin, (req, res) => {    
     res.render('forms/form-add-tecnico');
 });
 
@@ -223,14 +235,14 @@ app.post('/add-tecnico-db', (req, res) => {
 
 });
 
-app.get('/list-turma', (req, res) => {
+app.get('/list-turma', eAdmin, (req, res) => {
     
     Turma.find().populate('tecnico').sort({turma: 'ASC'}).then((turmas) => {
         res.render('lists/list-turma', {turmas: turmas});
     });
 });
 
-app.get('/list-sala', (req, res) => {
+app.get('/list-sala', eAdmin, (req, res) => {
     
     Sala.find().populate('tecnico').sort({sala: 'ASC'}).then((salas) => {
         res.render('lists/list-sala', {salas: salas});
@@ -238,7 +250,7 @@ app.get('/list-sala', (req, res) => {
     
 });
 
-app.get('/list-tecnico', (req, res) => {
+app.get('/list-tecnico', eAdmin, (req, res) => {
 
     Tecnico.find().sort({tecnico: 'ASC'}).then((tecnicos) => {
 
@@ -309,7 +321,7 @@ app.get('/list-mapa', (req, res) => {
     
 })
 
-app.get('/add-mapa', (req, res) => {
+app.get('/add-mapa', eAdmin, (req, res) => {
     
     Sala.find().sort({sala: 'ASC'}).then((salas) => {  
         
@@ -433,6 +445,12 @@ app.get('/form-cons-mapa', (req, res) => {
     res.render('forms/form-cons-mapa')
 })
 
+app.get('/usuarios/form-cons-mapa', (req, res) => {
+    res.render('forms/form-cons-mapa')
+})
+
+
+
 app.post('/search-mapa-data', (req, res) => {
 
     var erros = [];
@@ -492,6 +510,9 @@ app.get('/show-mapas', (req, res) => {
 app.use('/usuarios', usuarios);
 
 //configuração doservidor
-app.listen(8080, () => {
+const PORT = process.env.PORT || 8080
+app.listen(PORT, () => {
     console.log('Server running on port 8080');
 });
+
+
