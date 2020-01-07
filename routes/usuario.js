@@ -111,4 +111,38 @@ router.get('/logout', (req, res) => {
 })
 
 
+
+router.get('/list-tecnico', (req, res) => {
+    res.redirect('/list-tecnico')
+})
+
+router.get('/list-sala', (req, res) => {
+    res.redirect('/list-sala')
+})
+
+router.get('/list-turma', (req, res) => {
+    res.redirect('/list-turma')
+})
+
+router.get('/add-tecnico', (req, res) => {
+    res.redirect('/add-tecnico')
+})
+
+router.get('/add-turma', (req, res) => {
+    res.redirect('/add-turma')
+})
+
+router.get('/add-sala', (req, res) => {
+    res.redirect('/add-sala')
+})
+
+router.get('/add-mapa', (req, res) => {
+    res.redirect('/add-mapa')
+})
+
+router.get('/show-mapas', (req, res) => {
+    res.redirect('/show-mapas')
+})
+
+
 module.exports = router;

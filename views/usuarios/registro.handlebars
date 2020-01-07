@@ -7,18 +7,33 @@
 <div class="card mt-5">
     <div class="card-body">
         <form action="/usuarios/registro" method="POST">
-           
-            <label for="nome">Nome: </label>
-                <input type="text" name="nome" class="form-control" required>
-            <label for="email">E-mail: </label>
-                <input type="text" name="email" class="form-control" required>
-            <label for="senha">Senha: </label>
-                <input type="password" name="senha" class="form-control" required>
-            <label for="senha2">Repita a sua senha: </label>
-                <input type="password" name="senha2" class="form-control" required>
-           
 
-            <button type="submit" class="btn btn-success mt-4">Criar conta</button>
+            <div class="row">                
+                <div class="col">
+                    <label for="nome">Nome: </label>
+                    <input type="text" name="nome" class="form-control" required>
+                </div>
+                <div class="col">
+                    <label for="email">E-mail: </label>
+                    <input type="text" name="email" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col">
+                    <label for="senha">Senha: </label>
+                    <input type="password" name="senha" class="form-control" required>
+                </div>
+                <div class="col">
+                    <label for="senha2">Repita a sua senha: </label>
+                    <input type="password" name="senha2" class="form-control" required>
+                </div>
+            </div>           
+            <div class="row">
+                <div class="col text-right">
+                    <button type="submit" class="btn btn-success mt-4">Criar conta</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>

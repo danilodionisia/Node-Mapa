@@ -5,18 +5,20 @@
             
             {{#each turmas}}
                 <div class="card mt-2">
-                    <div class="card-body">
-                        <p>
-                            <strong>Turma: </strong> {{turma}} <br>
-                            <strong>Oferta: </strong> {{oferta}} <br>
-                            <strong>Técnica: </strong> {{tecnico.tecnico}}
-                        </p>
-                        <form action="/rem-turma-db" method="POST">
-                            <div class="align-right">
+                    <div class="card-body row">
+                        <div class="col">
+                            <p>
+                                <strong>Turma: </strong> {{turma}} <br>
+                                <strong>Oferta: </strong> {{oferta}} <br>
+                                <strong>Técnica: </strong> {{tecnico.tecnico}}
+                            </p>
+                        </div>
+                        <div class="col text-right my-auto">
+                            <form action="/rem-turma-db" method="POST">
                                 <input type="hidden" name="id" value="{{_id}}">
                                 <button class="btn btn-danger" type="submit">Remover</button>
-                            </div>                            
-                        </form>
+                            </form>
+                        </div>                        
                     </div>
                 </div>
             {{else}}    

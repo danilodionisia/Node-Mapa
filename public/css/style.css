@@ -30,7 +30,7 @@
 
 
 
-
+/*
 .Manhã{
     background-color: gold;
 }
@@ -42,7 +42,7 @@
 .Noite{
     background-color: cyan;
 }
-
+*/
 
 @media print {
     @page {size: landscape}

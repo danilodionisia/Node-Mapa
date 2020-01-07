@@ -5,18 +5,20 @@
             
             {{#each salas}}
                 <div class="card mt-2">
-                    <div class="card-body">
-                        <p>
-                            <strong>Sala: </strong> {{sala}} <br>
-                            <strong>Capacidade: </strong>{{capacidade}} <br>
-                            <strong>Técnica(o): </strong>{{tecnico.tecnico}}
-                        </p>
-                        <form action="/rem-sala-db" method="POST">
-                            <div class="align-right">
+                    <div class="card-body row">
+                        <div class="col">
+                            <p>
+                                <strong>Sala: </strong> {{sala}} <br>
+                                <strong>Capacidade: </strong>{{capacidade}} <br>
+                                <strong>Técnica(o): </strong>{{tecnico.tecnico}}
+                            </p>
+                        </div>
+                        <div class="col text-right my-auto">
+                            <form action="/rem-sala-db" method="POST">
                                 <input type="hidden" name="id" value="{{_id}}">
                                 <button class="btn btn-danger" type="submit">Remover</button>
-                            </div>                            
-                        </form>
+                            </form>
+                        </div>                        
                     </div>
                 </div>
             {{else}}    
