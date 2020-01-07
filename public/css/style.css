@@ -17,14 +17,15 @@
 
 .flex-container {
     display: flex;
-    flex-wrap: nowrap;
+    flex-flow: row wrap;
 }
   
-.flex-container > div {
-    width: 220px;
+.item-container{
+    width: 160px;
     margin: 5px;
     background-color: #f2f2f2;
     text-align: center;
+    word-wrap: normal;
 }
 
 
@@ -46,6 +47,28 @@
 @media print {
     @page {size: landscape}
 	.print {display:block}
-    .btn-print, .nav {display:none;}
-    *{font-size: small;}
+    .btn-print, .nav, .bar-top {display:none;}
+    *{font-size: 8px;}
+    .flex-container > div {
+        width: 120px;
+        margin: 2px;
+        word-wrap:  normal;
+    }
 }
+
+
+.nav{
+    background-color: #FBE3AF;
+    border-bottom: solid 2px #FAEAA1;
+    border-top: solid 2px #FAEAA1;
+}
+
+.dropdown-item, .nav-link, .dropdown-menu{
+    color: #014687;
+    background-color: #FBE3AF;
+}
+
+.bar-top{
+    border-top: solid 5px #014687;
+}
+

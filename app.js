@@ -78,9 +78,28 @@ app.get('/', (req, res) => {
 
     var inf = [{path: 'tecnico', select: 'tecnico'}, {path: 'turma', select: 'turma'}, {path: 'sala', select: 'sala'}];
 
-    Mapa.find({data: {$eq: dataSearch}}).populate(inf).sort({data: 'DESC', periodo: 'ASC'}).then((mapas) => {
-
-       res.render('index', {mapas: mapas, dataSys: dataSys});
+    //Mapa.find({ $and: [{data: {$eq: dataSearch}}, {periodo: {$eq: 'Manhã'}}] }).populate(inf).sort({data: 'DESC', periodo: 'ASC'}).then((mapas) => {
+    Mapa.find({ $and: [ { data: dataSearch}, { periodo:'Manhã'}] } ).populate(inf).sort({sala: 'ASC'}).then((mapaManha) => {
+    
+        Mapa.find({ $and: [ { data: dataSearch}, { periodo:'Tarde'}] } ).populate(inf).sort({sala: 'ASC'}).then((mapaTarde) => {
+    
+            Mapa.find({ $and: [ { data: dataSearch}, { periodo:'Noite'}] } ).populate(inf).sort({sala: 'ASC'}).then((mapaNoite) => {
+    
+                res.render('index', {mapaManha: mapaManha, mapaTarde: mapaTarde, mapaNoite: mapaNoite,dataSys: dataSys});
+        
+            }).catch((err) => {
+        
+               req.flash('error_msg', 'Erro ao carregar o mapa!');
+               res.redirect('/');
+        
+            });
+    
+        }).catch((err) => {
+    
+           req.flash('error_msg', 'Erro ao carregar o mapa!');
+           res.redirect('/');
+    
+        });
 
     }).catch((err) => {
 

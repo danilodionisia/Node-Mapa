@@ -3,8 +3,8 @@
         <p><strong>Data: {{dataSys}}</strong></p>
     </div>
     <div class="mt-2 flex-container">
-        {{#each mapas}}    
-            <div class="{{periodo}}">
+        {{#each mapaManha}}    
+            <div class="{{periodo}} item-container">
                 <p>
                     <input type="hidden" class="dataIni" value="{{data}}">
                     <small><strong class="dataFin">{{data}}</strong></small><br>
@@ -16,11 +16,55 @@
             </div>        
         {{else}}    
             <div class="card-body">
-                <h4>Não há mapa para listar</h4>
+                <h4>Sem mapas da manhã</h4>
             </div>
         {{/each}}
     </div>
-    <button class="btn-print btn btn-success mt-4" id="imprimir">Imprimir</button>
+
+    <div class="mt-2 flex-container">
+        {{#each mapaTarde}}    
+            <div class="{{periodo}} item-container">
+                <p>
+                    <input type="hidden" class="dataIni" value="{{data}}">
+                    <small><strong class="dataFin">{{data}}</strong></small><br>
+                    <small>Período: {{periodo}}</small><br>
+                    <small>Técnica(o): {{tecnico.tecnico}}</small><br>
+                    <small><strong>{{turma.turma}}</strong></small><br> 
+                    <small><strong>{{sala.sala}}</strong></small> 
+                </p>       
+            </div>        
+        {{else}}    
+            <div class="card-body">
+                <h4>Sem mapas da tarde</h4>
+            </div>
+        {{/each}}
+    </div>
+
+    <div class="mt-2 flex-container">
+        {{#each mapaNoite}}    
+            <div class="{{periodo}} item-container">
+                <p>
+                    <input type="hidden" class="dataIni" value="{{data}}">
+                    <small><strong class="dataFin">{{data}}</strong></small><br>
+                    <small>Período: {{periodo}}</small><br>
+                    <small>Técnica(o): {{tecnico.tecnico}}</small><br>
+                    <small><strong>{{turma.turma}}</strong></small><br> 
+                    <small><strong>{{sala.sala}}</strong></small> 
+                </p>       
+            </div>        
+        {{else}}    
+            <div class="card-body">
+                <h4>Sem mapas da noite</h4>
+            </div>
+        {{/each}}
+    </div>
+
+
+    <div class="row">
+        <div class="col text-right">
+            <button class="btn-print btn btn-primary mt-4" id="imprimir">Imprimir</button>
+        </div>
+    </div>    
 </div>
 <script>
 (function( w, d ) {
@@ -54,7 +98,7 @@
         let cm = 0;
 
         while(cm < qtdDivsM){
-            document.getElementsByClassName('Manhã')[cm].style = 'background-color: #81ecec';
+            document.getElementsByClassName('Manhã')[cm].style = 'background-color: #F0F8FF';
             cm++;
         }
 
@@ -63,7 +107,7 @@
         let ct = 0;
 
         while(ct < qtdDivsT){
-            document.getElementsByClassName('Tarde')[ct].style = 'background-color: #ffeaa7';
+            document.getElementsByClassName('Tarde')[ct].style = 'background-color: #FFFAFA';
             ct++;
         }
 
@@ -71,7 +115,7 @@
         let cn = 0;
 
         while(cn < qtdDivsN){
-            document.getElementsByClassName('Noite')[cn].style = 'background-color: #fab1a0';
+            document.getElementsByClassName('Noite')[cn].style = 'background-color: #F8F8FF';
             cn++;
         }
         

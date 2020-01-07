@@ -2,11 +2,23 @@
 <div class="card">
     <div class="card-body">
         <form action="/usuarios/login" method="POST">
-            <label for="email">Email: </label>
-                <input type="email" class="form-control" name="email" id="email" required>
-            <label for="senha">Senha: </label>
-                <input type="password" name="senha" id="senha" class="form-control" required>
-            <button type="submit" class="btn btn-success mt-4">Entrar</button>
+            <div class="row">
+                <div class="col">
+                    <label for="email">Email: </label>
+                    <input type="email" class="form-control" name="email" id="email" required>        
+                </div>
+            </div>    
+            <div class="row">
+                <div class="col">
+                    <label for="senha">Senha: </label>
+                    <input type="password" name="senha" id="senha" class="form-control" required>
+                </div>
+            </div>            
+            <div class="row">
+                <div class="col mt-4 text-right">
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </div>
+            </div>            
         </form>
     </div>
 </div>

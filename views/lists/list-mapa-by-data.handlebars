@@ -35,6 +35,31 @@
             document.getElementsByClassName('dataFin')[c].innerHTML = dia + '/' + mes + '/' + ano;
             c++
         }
+
+        let qtdDivsM = document.getElementsByClassName('Manhã').length;
+        let cm = 0;
+
+        while(cm < qtdDivsM){
+            document.getElementsByClassName('Manhã')[cm].style = 'background-color: #F0F8FF';
+            cm++;
+        }
+
+        
+        let qtdDivsT = document.getElementsByClassName('Tarde').length;
+        let ct = 0;
+
+        while(ct < qtdDivsT){
+            document.getElementsByClassName('Tarde')[ct].style = 'background-color: #FFFAFA';
+            ct++;
+        }
+
+        let qtdDivsN = document.getElementsByClassName('Noite').length;
+        let cn = 0;
+
+        while(cn < qtdDivsN){
+            document.getElementsByClassName('Noite')[cn].style = 'background-color: #F8F8FF';
+            cn++;
+        }
         
 
     }
